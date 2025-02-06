@@ -2,6 +2,7 @@ package by.koronatech.office.core.mapper;
 
 import by.koronatech.office.api.dto.EmployeeDTO;
 import by.koronatech.office.api.dto.SaveEmployeeDTO;
+import by.koronatech.office.core.entity.Department;
 import by.koronatech.office.core.entity.Employee;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class EmployeeMapper {
                 employee.getId(),
                 employee.getName(),
                 employee.getSalary(),
-                employee.getDepartment(),
+                employee.getDepartment().getName(),
                 employee.isManager()
         );
     }
@@ -33,7 +34,7 @@ public class EmployeeMapper {
                 .toList();
     }
 
-    public static Employee fromSaveEmployeeDTO(SaveEmployeeDTO saveEmployeeDTO) {
+    public static Employee fromSaveEmployeeDTO(SaveEmployeeDTO saveEmployeeDTO, Department department) {
         if (saveEmployeeDTO == null) {
             return null;
         }
@@ -42,7 +43,7 @@ public class EmployeeMapper {
                 null,
                 saveEmployeeDTO.getName(),
                 saveEmployeeDTO.getSalary(),
-                saveEmployeeDTO.getDepartment(),
+                department,
                 saveEmployeeDTO.isManager()
         );
     }

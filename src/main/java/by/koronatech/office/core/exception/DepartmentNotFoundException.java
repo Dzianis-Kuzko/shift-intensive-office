@@ -6,4 +6,8 @@ public class DepartmentNotFoundException extends RuntimeException {
         super("Department with ID " + departmentId + " not found");
     }
 
+    public DepartmentNotFoundException(String departmentName) {
+        super("Department with name " + departmentName + " not found");
+    }
+
 }
