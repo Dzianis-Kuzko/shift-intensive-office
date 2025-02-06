@@ -4,6 +4,7 @@ buildscript {
 	}
 	dependencies {
 		classpath "com.avast.gradle:gradle-docker-compose-plugin:0.17.6"
+
 	}
 }
 
@@ -28,6 +29,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot'
 	implementation 'org.springframework.boot:spring-boot-autoconfigure'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	compileOnly 'org.projectlombok:lombok'
 
