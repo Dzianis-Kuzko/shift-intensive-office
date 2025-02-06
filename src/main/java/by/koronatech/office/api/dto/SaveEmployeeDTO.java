@@ -5,11 +5,19 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @EqualsAndHashCode
 @AllArgsConstructor
-public class GetDepartmentDTO {
-    private Integer id;
+public class SaveEmployeeDTO {
+
     private String name;
+
+    private BigDecimal salary;
+
+    private String Department;
+
+    private boolean manager;
 }

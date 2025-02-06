@@ -9,10 +9,9 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode
 @AllArgsConstructor
-public class GetEmployeeDTO {
+public class DepartmentDTO {
+
     private Integer id;
+
     private String name;
-    private Double salary;
-    private String Department;
-    private Boolean manager;
 }

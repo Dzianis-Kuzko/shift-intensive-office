@@ -6,15 +6,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Employee {
+
     private Integer id;
+
     private String name;
-    private Double salary;
-    private String Department;
-    private Boolean manager;
+
+    private BigDecimal salary;
+
+    private String department;
+
+    private boolean manager;
 }

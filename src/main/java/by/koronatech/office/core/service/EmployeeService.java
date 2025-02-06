@@ -1,14 +1,14 @@
 package by.koronatech.office.core.service;
 
-import by.koronatech.office.api.dto.CreateEmployeeDTO;
-import by.koronatech.office.api.dto.GetEmployeeDTO;
+import by.koronatech.office.api.dto.SaveEmployeeDTO;
+import by.koronatech.office.api.dto.EmployeeDTO;
 
 public interface EmployeeService {
-    GetEmployeeDTO create(CreateEmployeeDTO createEmployeeDTO);
+    EmployeeDTO create(SaveEmployeeDTO saveEmployeeDTO);
 
-    GetEmployeeDTO promoteToManager(Integer id);
+    EmployeeDTO promoteToManager(Integer id);
 
-    GetEmployeeDTO update(Integer id, CreateEmployeeDTO updateEmployeeDTO);
+    EmployeeDTO update(Integer id, SaveEmployeeDTO updateEmployeeDTO);
 
     void delete(Integer id);
 }

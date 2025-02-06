@@ -1,46 +1,49 @@
 package by.koronatech.office.core.mapper;
 
-import by.koronatech.office.api.dto.CreateEmployeeDTO;
-import by.koronatech.office.api.dto.GetEmployeeDTO;
+import by.koronatech.office.api.dto.EmployeeDTO;
+import by.koronatech.office.api.dto.SaveEmployeeDTO;
 import by.koronatech.office.core.entity.Employee;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class EmployeeMapper {
-    public static GetEmployeeDTO toGetEmployeeDTO(Employee employee) {
+
+    public static EmployeeDTO toGetEmployeeDTO(Employee employee) {
         if (employee == null) {
             return null;
         }
-        return new GetEmployeeDTO(
+
+        return new EmployeeDTO(
                 employee.getId(),
                 employee.getName(),
                 employee.getSalary(),
                 employee.getDepartment(),
-                employee.getManager()
+                employee.isManager()
         );
     }
 
-    public static List<GetEmployeeDTO> toEmployeeDTOList(List<Employee> employees) {
+    public static List<EmployeeDTO> toEmployeeDTOList(List<Employee> employees) {
         if (employees == null) {
             return null;
         }
+
         return employees.stream()
                 .map(EmployeeMapper::toGetEmployeeDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
-    public static Employee fromCreateEmployeeDTO(CreateEmployeeDTO createEmployeeDTO) {
-        if (createEmployeeDTO == null) {
+    public static Employee fromSaveEmployeeDTO(SaveEmployeeDTO saveEmployeeDTO) {
+        if (saveEmployeeDTO == null) {
             return null;
         }
+
         return new Employee(
                 null,
-                createEmployeeDTO.getName(),
-                createEmployeeDTO.getSalary(),
-                createEmployeeDTO.getDepartment(),
-                createEmployeeDTO.getManager()
+                saveEmployeeDTO.getName(),
+                saveEmployeeDTO.getSalary(),
+                saveEmployeeDTO.getDepartment(),
+                saveEmployeeDTO.isManager()
         );
     }
 }

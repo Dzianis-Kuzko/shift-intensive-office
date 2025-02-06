@@ -1,12 +1,12 @@
 package by.koronatech.office.core.service;
 
-import by.koronatech.office.api.dto.GetDepartmentDTO;
-import by.koronatech.office.api.dto.GetEmployeeDTO;
+import by.koronatech.office.api.dto.DepartmentDTO;
+import by.koronatech.office.api.dto.EmployeeDTO;
 
 import java.util.List;
 
 public interface DepartmentService {
-    List<GetDepartmentDTO> get();
+    List<DepartmentDTO> get();
 
-    List<GetEmployeeDTO> getEmployeesByDepartment(Integer id);
+    List<EmployeeDTO> getEmployeesByDepartment(Integer id);
 }

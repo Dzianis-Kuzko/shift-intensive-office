@@ -1,9 +1,10 @@
 package by.koronatech.office.api.controller;
 
-import by.koronatech.office.api.dto.CreateEmployeeDTO;
-import by.koronatech.office.api.dto.GetEmployeeDTO;
+import by.koronatech.office.api.dto.SaveEmployeeDTO;
+import by.koronatech.office.api.dto.EmployeeDTO;
 import by.koronatech.office.core.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,26 +22,27 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     @PostMapping
-    public GetEmployeeDTO create(@RequestBody CreateEmployeeDTO createEmployeeDTO) {
-        return employeeService.create(createEmployeeDTO);
+    public EmployeeDTO create(@RequestBody SaveEmployeeDTO saveEmployeeDTO) {
+        return employeeService.create(saveEmployeeDTO);
     }
 
-    @PatchMapping("/{id}/make-manager")
-    public GetEmployeeDTO promoteToManager(@PathVariable Integer id) {
+    @PatchMapping("/{id}/manager")
+    public EmployeeDTO promoteToManager(@PathVariable Integer id) {
         return employeeService.promoteToManager(id);
     }
 
 
     @PutMapping("/{id}")
-    public GetEmployeeDTO update(
+    public EmployeeDTO update(
             @PathVariable Integer id,
-            @RequestBody CreateEmployeeDTO createEmployeeDTO) {
-        return employeeService.update(id, createEmployeeDTO);
+            @RequestBody SaveEmployeeDTO saveEmployeeDTO) {
+        return employeeService.update(id, saveEmployeeDTO);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Integer id) {
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
         employeeService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
