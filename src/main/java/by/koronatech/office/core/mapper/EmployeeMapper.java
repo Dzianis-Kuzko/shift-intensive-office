@@ -5,8 +5,6 @@ import by.koronatech.office.api.dto.SaveEmployeeDTO;
 import by.koronatech.office.core.entity.Department;
 import by.koronatech.office.core.entity.Employee;
 
-import java.util.List;
-
 
 public class EmployeeMapper {
 
@@ -22,16 +20,6 @@ public class EmployeeMapper {
                 employee.getDepartment().getName(),
                 employee.isManager()
         );
-    }
-
-    public static List<EmployeeDTO> toEmployeeDTOList(List<Employee> employees) {
-        if (employees == null) {
-            return null;
-        }
-
-        return employees.stream()
-                .map(EmployeeMapper::toGetEmployeeDTO)
-                .toList();
     }
 
     public static Employee fromSaveEmployeeDTO(SaveEmployeeDTO saveEmployeeDTO, Department department) {
