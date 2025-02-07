@@ -3,54 +3,37 @@ package by.koronatech.office.core.service.inpl;
 import by.koronatech.office.api.dto.DepartmentDTO;
 import by.koronatech.office.api.dto.EmployeeDTO;
 import by.koronatech.office.core.entity.Department;
+import by.koronatech.office.core.entity.Employee;
 import by.koronatech.office.core.exception.DepartmentNotFoundException;
 import by.koronatech.office.core.mapper.DepartmentMapper;
 import by.koronatech.office.core.mapper.EmployeeMapper;
+import by.koronatech.office.core.repository.DepartmentRepository;
+import by.koronatech.office.core.repository.EmployeeRepository;
 import by.koronatech.office.core.service.DepartmentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class DepartmentServiceImpl implements DepartmentService {
 
-    private final List<Department> departments = new ArrayList<>();
-
-    private final EmployeeServiceImpl employeeService;
-
-    public DepartmentServiceImpl(EmployeeServiceImpl employeeService) {
-        this.employeeService = employeeService;
-
-        departments.add(new Department(1, "Бухгалтерия"));
-        departments.add(new Department(2, "Маркетинг"));
-        departments.add(new Department(3, "Продажи"));
-        departments.add(new Department(4, "HR"));
-        departments.add(new Department(5, "IT"));
-        departments.add(new Department(6, "Юридический"));
-        departments.add(new Department(7, "Логистика"));
-        departments.add(new Department(8, "Разработка"));
-        departments.add(new Department(9, "Клиентская поддержка"));
-        departments.add(new Department(10, "Исследования и разработки"));
-    }
+    private final DepartmentRepository departmentRepository;
+    private final EmployeeRepository employeeRepository;
 
     @Override
     public List<DepartmentDTO> get() {
-        return DepartmentMapper.toGetDepartmentDTOList(departments);
+        return DepartmentMapper.toGetDepartmentDTOList(departmentRepository.findAll());
     }
 
     @Override
     public List<EmployeeDTO> getEmployeesByDepartment(Integer departmentId) {
-        String departmentName = departments.stream()
-                .filter(department -> department.getId().equals(departmentId))
-                .map(Department::getName)
-                .findFirst()
+        Department department = departmentRepository.findById(departmentId)
                 .orElseThrow(() -> new DepartmentNotFoundException(departmentId));
 
-        return employeeService.getEmployees().stream()
-                .filter(employee -> employee.getDepartment().equals(departmentName))
-                .map(EmployeeMapper::toGetEmployeeDTO)
-                .toList();
+        List<Employee> employeesInDepartment = employeeRepository.findByDepartment(department);
+
+        return EmployeeMapper.toEmployeeDTOList(employeesInDepartment);
     }
 }
