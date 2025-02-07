@@ -20,7 +20,9 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -134,10 +136,73 @@ class EmployeeServiceImplTest {
     }
 
     @Test
-    void update() {
+    public void testUpdateWithSuccess() {
+        Department newDepartment = new Department(2, "HR");
+        saveEmployeeDTO.setDepartment(newDepartment.getName());
+        expectedEmployeeDTO.setDepartment(newDepartment.getName());
+
+        when(employeeRepository.findById(employee.getId()))
+                .thenReturn(Optional.of(employee));
+
+        when(departmentRepository.findByName(saveEmployeeDTO.getDepartment()))
+                .thenReturn(Optional.of(newDepartment));
+
+        when(employeeRepository.save(employee))
+                .thenReturn(employee);
+
+        EmployeeDTO result = employeeService.update(employee.getId(), saveEmployeeDTO);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(expectedEmployeeDTO.getId());
+        assertThat(result.getName()).isEqualTo(expectedEmployeeDTO.getName());
+        assertThat(result.getSalary()).isEqualByComparingTo(expectedEmployeeDTO.getSalary());
+        assertThat(result.getDepartment()).isEqualTo(expectedEmployeeDTO.getDepartment());
+        assertThat(result.isManager()).isEqualTo(expectedEmployeeDTO.isManager());
+
+        verify(employeeRepository).findById(employee.getId());
+        verify(departmentRepository).findByName(saveEmployeeDTO.getDepartment());
+        verify(employeeRepository).save(employee);
     }
 
     @Test
-    void delete() {
+    public void testUpdateWithFault() {
+        when(employeeRepository.findById(employee.getId()))
+                .thenReturn(Optional.of(employee));
+
+        when(departmentRepository.findByName(saveEmployeeDTO.getDepartment()))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> employeeService.update(employee.getId(), saveEmployeeDTO))
+                .isInstanceOf(DepartmentNotFoundException.class)
+                .hasMessage(new DepartmentNotFoundException(saveEmployeeDTO.getDepartment()).getMessage());
+
+        verify(employeeRepository).findById(employee.getId());
+        verify(departmentRepository).findByName(saveEmployeeDTO.getDepartment());
+        verify(employeeRepository, never()).save(any(Employee.class));
+    }
+
+
+    @Test
+    void testDeleteWithSuccess() {
+
+        when(employeeRepository.existsById(employee.getId())).thenReturn(true);
+
+        employeeService.delete(employee.getId());
+
+        verify(employeeRepository).existsById(employee.getId());
+        verify(employeeRepository).deleteById(employee.getId());
+    }
+
+
+    @Test
+    public void testDeleteWithFault() {
+        when(employeeRepository.existsById(employee.getId())).thenReturn(false);
+
+        assertThatThrownBy( () -> employeeService.delete(employee.getId()))
+                .isInstanceOf(EmployeeNotFoundException.class)
+                .hasMessage(new EmployeeNotFoundException(employee.getId()).getMessage());
+
+        verify(employeeRepository).existsById(employee.getId());
+        verify(employeeRepository, never()).deleteById(anyInt());
     }
 }
