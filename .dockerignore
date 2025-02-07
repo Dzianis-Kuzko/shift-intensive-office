@@ -1,0 +1,17 @@
+.idea/
+*.iml
+
+*.log
+*.tmp
+*.swp
+*.swo
+
+build/
+.gradle/
+out/
+
+.DS_Store
+Thumbs.db
+
+.git/
+.gitignore
