@@ -2,11 +2,11 @@ package by.koronatech.office.core.service;
 
 import by.koronatech.office.api.dto.DepartmentDTO;
 import by.koronatech.office.api.dto.EmployeeDTO;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface DepartmentService {
-    List<DepartmentDTO> get();
+    Page<DepartmentDTO> getAll(Pageable pageable);
 
-    List<EmployeeDTO> getEmployeesByDepartment(Integer id);
+    Page<EmployeeDTO> getEmployeesByDepartment(Integer id, Pageable pageable);
 }
