@@ -20,16 +20,17 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
 class EmployeeServiceImplTest {
+    private final static int ID = 1;
 
     @Mock
     private EmployeeRepository employeeRepository;
@@ -74,15 +75,13 @@ class EmployeeServiceImplTest {
 
         EmployeeDTO result = employeeService.create(saveEmployeeDTO);
 
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(expectedEmployeeDTO.getId());
-        assertThat(result.getName()).isEqualTo(expectedEmployeeDTO.getName());
-        assertThat(result.getSalary()).isEqualByComparingTo(expectedEmployeeDTO.getSalary());
-        assertThat(result.getDepartment()).isEqualTo(expectedEmployeeDTO.getDepartment());
-        assertThat(result.isManager()).isEqualTo(expectedEmployeeDTO.isManager());
+        assertThat(result).isEqualTo(expectedEmployeeDTO);
 
         verify(departmentRepository).findByName(saveEmployeeDTO.getDepartment());
         verify(employeeRepository).save(any(Employee.class));
+        verifyNoMoreInteractions(departmentRepository);
+        verifyNoMoreInteractions(employeeRepository);
+
     }
 
     @Test
@@ -96,10 +95,14 @@ class EmployeeServiceImplTest {
 
         verify(departmentRepository).findByName(saveEmployeeDTO.getDepartment());
         verify(employeeRepository, never()).save(any(Employee.class));
+        verifyNoMoreInteractions(departmentRepository);
+        verifyNoMoreInteractions(employeeRepository);
     }
 
     @Test
     public void testPromoteToManagerWithSuccess() {
+        expectedEmployeeDTO.setManager(true);
+
         when(employeeRepository.findById(employee.getId()))
                 .thenReturn(Optional.of(employee));
 
@@ -108,16 +111,10 @@ class EmployeeServiceImplTest {
 
         EmployeeDTO result = employeeService.promoteToManager(employee.getId());
 
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(expectedEmployeeDTO.getId());
-        assertThat(result.getName()).isEqualTo(expectedEmployeeDTO.getName());
-        assertThat(result.getSalary()).isEqualByComparingTo(expectedEmployeeDTO.getSalary());
-        assertThat(result.getDepartment()).isEqualTo(expectedEmployeeDTO.getDepartment());
-        assertThat(result.isManager()).isTrue();
-
+        assertThat(result).isEqualTo(expectedEmployeeDTO);
         verify(employeeRepository).findById(employee.getId());
         verify(employeeRepository).save(employee);
-
+        verifyNoMoreInteractions(employeeRepository);
     }
 
     @Test
@@ -152,16 +149,12 @@ class EmployeeServiceImplTest {
 
         EmployeeDTO result = employeeService.update(employee.getId(), saveEmployeeDTO);
 
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(expectedEmployeeDTO.getId());
-        assertThat(result.getName()).isEqualTo(expectedEmployeeDTO.getName());
-        assertThat(result.getSalary()).isEqualByComparingTo(expectedEmployeeDTO.getSalary());
-        assertThat(result.getDepartment()).isEqualTo(expectedEmployeeDTO.getDepartment());
-        assertThat(result.isManager()).isEqualTo(expectedEmployeeDTO.isManager());
+        assertThat(result).isEqualTo(expectedEmployeeDTO);
 
         verify(employeeRepository).findById(employee.getId());
         verify(departmentRepository).findByName(saveEmployeeDTO.getDepartment());
         verify(employeeRepository).save(employee);
+        verifyNoMoreInteractions(employeeRepository);
     }
 
     @Test
@@ -179,30 +172,32 @@ class EmployeeServiceImplTest {
         verify(employeeRepository).findById(employee.getId());
         verify(departmentRepository).findByName(saveEmployeeDTO.getDepartment());
         verify(employeeRepository, never()).save(any(Employee.class));
+        verifyNoMoreInteractions(employeeRepository);
     }
 
 
     @Test
     void testDeleteWithSuccess() {
 
-        when(employeeRepository.existsById(employee.getId())).thenReturn(true);
+        when(employeeRepository.existsById(ID)).thenReturn(true);
 
-        employeeService.delete(employee.getId());
+        employeeService.delete(ID);
 
-        verify(employeeRepository).existsById(employee.getId());
-        verify(employeeRepository).deleteById(employee.getId());
+        verify(employeeRepository).existsById(ID);
+        verify(employeeRepository).deleteById(ID);
     }
 
 
     @Test
     public void testDeleteWithFault() {
-        when(employeeRepository.existsById(employee.getId())).thenReturn(false);
+        when(employeeRepository.existsById(ID)).thenReturn(false);
 
-        assertThatThrownBy( () -> employeeService.delete(employee.getId()))
+        assertThatThrownBy(() -> employeeService.delete(ID))
                 .isInstanceOf(EmployeeNotFoundException.class)
-                .hasMessage(new EmployeeNotFoundException(employee.getId()).getMessage());
+                .hasMessage(new EmployeeNotFoundException(ID).getMessage());
 
-        verify(employeeRepository).existsById(employee.getId());
+        verify(employeeRepository).existsById(ID);
         verify(employeeRepository, never()).deleteById(anyInt());
+        verifyNoMoreInteractions(employeeRepository);
     }
 }
